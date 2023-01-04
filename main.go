@@ -63,7 +63,7 @@ func readTxtFile(inputFilename string) []Entry {
 		}
 
 		// Parse the time
-		t, err := time.Parse("15:04:05.000", parts[0])
+		chapterTime, err := time.Parse("15:04:05.000", parts[0])
 		if err != nil {
 			fmt.Printf("Skipping invalid line: %v\n", scanner.Text())
 
@@ -71,7 +71,10 @@ func readTxtFile(inputFilename string) []Entry {
 		}
 
 		// Convert the time to seconds
-		milliseconds := float64(t.Hour())*3600.0 + float64(t.Minute())*60.0 + float64(t.Second()) + float64(t.Nanosecond())/1000000000.0
+		milliseconds := float64(chapterTime.Hour())*3600.0 +
+			float64(chapterTime.Minute())*60.0 +
+			float64(chapterTime.Second()) +
+			float64(chapterTime.Nanosecond())/1000000000.0
 
 		// Create a new entry and append it to the slice
 		entry := Entry{StartTime: milliseconds, Title: parts[1]}
@@ -82,7 +85,6 @@ func readTxtFile(inputFilename string) []Entry {
 		fmt.Printf("Error reading file: %v\n", err)
 		os.Exit(1)
 	}
-
 
 	return entries
 }
