@@ -45,9 +45,9 @@ jobs:
           # cache: true
       - run: go build -ldflags '-X main.version=${{ github.ref_name }}' -o bin/schaar2pod-${{ env.GOOS }}-${{ env.GOARCH }}
 
-      - uses: int128/go-actions/release@v1
-        with:
-          binary: bin/schaar2pod-*
+      # - uses: int128/go-actions/release@v1
+      #   with:
+      #     binary: bin/schaar2pod-*
 
       - uses: actions/upload-artifact@v3
         if: github.event_name != 'pull_request'
