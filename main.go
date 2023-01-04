@@ -2,42 +2,55 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
-	"encoding/json"
 	"time"
 )
 
 type Entry struct {
 	StartTime float64 `json:"startTime"`
-	Title string `json:"title"`
+	Title     string  `json:"title"`
 }
 
 type JSONFile struct {
-	Version   string   `json:"version"`
-	Chapters  []Entry `json:"chapters"`
+	Version  string  `json:"version"`
+	Chapters []Entry `json:"chapters"`
 }
 
-
-func main() {
-	// Check if a filename was provided
-	if len(os.Args) < 2 {
-		fmt.Println("Please provide a filename as the first argument.")
-		os.Exit(1)
+func writeJsonFile(outputFilename string, entries []Entry) {
+	jsonFile := &JSONFile{
+		Version:  "1.2.0",
+		Chapters: entries,
 	}
 
-	// Open the file
-	filename := os.Args[1]
-	file, err := os.Open(filename)
+	outputFile, err := os.Create(outputFilename)
+	if err != nil {
+		panic(err)
+	}
+	defer outputFile.Close()
+
+	jsonOutput, err := json.MarshalIndent(jsonFile, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = outputFile.Write(jsonOutput)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func readTxtFile(inputFilename string) []Entry {
+	var entries []Entry
+
+	file, err := os.Open(inputFilename)
 	if err != nil {
 		fmt.Printf("Error opening file: %s\n", err)
 		os.Exit(1)
 	}
 	defer file.Close()
-
-
-	var entries []Entry
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -65,36 +78,24 @@ func main() {
 
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("Error reading file: %v\n", err)
-		return
+		os.Exit(1)
 	}
-
-
-	jsonFile := &JSONFile{
-		Version:  "1.2.0",
-		Chapters: entries,
-	}
-
-	outputFilename := filename + ".json"
-	outputFile, err := os.Create(outputFilename)
-	if err != nil {
-		panic(err)
-	}
-	defer outputFile.Close()
-
-	b, err := json.MarshalIndent(jsonFile, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-
-	_, err = outputFile.Write(b)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("All done")
+	return entries
 }
 
+func main() {
+	// Check if a filename was provided
+	if len(os.Args) < 2 {
+		fmt.Println("Please provide a filename as the first argument.")
+		os.Exit(1)
+	}
 
+	// Open the file
+	inputFilename := os.Args[1]
+	outputFilename := inputFilename + ".json"
 
+	entries := readTxtFile(inputFilename)
 
-
-
+	writeJsonFile(outputFilename, entries)
+	fmt.Println("All done")
+}
