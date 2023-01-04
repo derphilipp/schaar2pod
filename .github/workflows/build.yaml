@@ -53,30 +53,3 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: yes
 
-      # - uses: int128/go-actions/release@v1
-      #   with:
-      #     binary: bin/schaar2pod-*
-
-      # - uses: actions/upload-artifact@v3
-      #   if: github.event_name != 'pull_request'
-      #   with:
-      #     name: schaar2pod-binaries
-      #     path: bin/schaar2pod-*
-      #     if-no-files-found: error
-      #
-      # - uses: wangyoucao577/go-release-action@v1.34
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     goos: linux
-      #     goarch: amd64
-
-
-  publish:
-    if: github.ref_type == 'tag'
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v3
-      - uses: rajatjindal/krew-release-bot@v0.0.43
