@@ -19,7 +19,7 @@ type JSONFile struct {
 	Chapters []Entry `json:"chapters"`
 }
 
-func writeJsonFile(outputFilename string, entries []Entry) {
+func writeJSONFile(outputFilename string, entries []Entry) {
 	jsonFile := &JSONFile{
 		Version:  "1.2.0",
 		Chapters: entries,
@@ -58,6 +58,7 @@ func readTxtFile(inputFilename string) []Entry {
 		parts := strings.SplitN(scanner.Text(), " ", 2)
 		if len(parts) != 2 {
 			fmt.Printf("Skipping invalid line: %v\n", scanner.Text())
+
 			continue
 		}
 
@@ -65,6 +66,7 @@ func readTxtFile(inputFilename string) []Entry {
 		t, err := time.Parse("15:04:05.000", parts[0])
 		if err != nil {
 			fmt.Printf("Skipping invalid line: %v\n", scanner.Text())
+
 			continue
 		}
 
@@ -80,6 +82,8 @@ func readTxtFile(inputFilename string) []Entry {
 		fmt.Printf("Error reading file: %v\n", err)
 		os.Exit(1)
 	}
+
+
 	return entries
 }
 
@@ -96,6 +100,6 @@ func main() {
 
 	entries := readTxtFile(inputFilename)
 
-	writeJsonFile(outputFilename, entries)
+	writeJSONFile(outputFilename, entries)
 	fmt.Println("All done")
 }
