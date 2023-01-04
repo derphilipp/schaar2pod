@@ -85,13 +85,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%s\n\n", b)
 
 	_, err = outputFile.Write(b)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("All done\n\n")
+	fmt.Println("All done")
 }
 
 
