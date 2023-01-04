@@ -43,10 +43,18 @@ jobs:
         with:
           go-version: 1.19.4
           # cache: true
-      - run: go build -ldflags '-X main.version=${{ github.ref_name }}'
+      - run: go build -ldflags '-X main.version=${{ github.ref_name }}' -o bin/schaar2pod-${{ env.GOOS }}-${{ env.GOARCH }}
+
       - uses: int128/go-actions/release@v1
         with:
-          binary: schaar2pod
+          binary: bin/schaar2pod-*
+
+      - uses: actions/upload-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          name: schaar2pod-binaries
+          path: bin/schaar2pod-*
+          if-no-files-found: error
   publish:
     if: github.ref_type == 'tag'
     needs:
