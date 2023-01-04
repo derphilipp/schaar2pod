@@ -41,20 +41,36 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
-          go-version: 1.19.4
-          # cache: true
+          go-version: 'stable'
       - run: go build -ldflags '-X main.version=${{ github.ref_name }}' -o bin/schaar2pod-${{ env.GOOS }}-${{ env.GOARCH }}
+
+      - name: publish@release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: bin/schaar2pod-${{ env.GOOS }}-${{ env.GOARCH }}
+          asset_name: schaar2pod-${{ env.GOOS }}-${{ env.GOARCH }}
+          tag: ${{ github.ref }}
+          overwrite: yes
 
       # - uses: int128/go-actions/release@v1
       #   with:
       #     binary: bin/schaar2pod-*
 
-      - uses: actions/upload-artifact@v3
-        if: github.event_name != 'pull_request'
-        with:
-          name: schaar2pod-binaries
-          path: bin/schaar2pod-*
-          if-no-files-found: error
+      # - uses: actions/upload-artifact@v3
+      #   if: github.event_name != 'pull_request'
+      #   with:
+      #     name: schaar2pod-binaries
+      #     path: bin/schaar2pod-*
+      #     if-no-files-found: error
+      #
+      # - uses: wangyoucao577/go-release-action@v1.34
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     goos: linux
+      #     goarch: amd64
+
+
   publish:
     if: github.ref_type == 'tag'
     needs:
