@@ -5,7 +5,7 @@ Converts text chapter marks to json formatted ones
 Example: Render chaptermarks from [Ultraschall](https://ultraschall.fm/) and convert it to use it with [Castopod](https://castopod.org/)
 
 ## Usage: 
-`schaar2pod inputfile.txt`
+`./schaar2pod inputfile.txt`
 
 This will generate a new file called `inputfile.txt.json`
 
