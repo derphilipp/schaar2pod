@@ -55,15 +55,15 @@ func readTxtFile(inputFilename string) []Entry {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		// Split the line into the time and the text
-		parts := strings.SplitN(scanner.Text(), " ", 2)
-		if len(parts) != 2 {
+		chapterParts := strings.SplitN(scanner.Text(), " ", 2)
+		if len(chapterParts) != 2 {
 			fmt.Printf("Skipping invalid line: %v\n", scanner.Text())
 
 			continue
 		}
 
 		// Parse the time
-		chapterTime, err := time.Parse("15:04:05.000", parts[0])
+		chapterTime, err := time.Parse("15:04:05.000", chapterParts[0])
 		if err != nil {
 			fmt.Printf("Skipping invalid line: %v\n", scanner.Text())
 
@@ -77,7 +77,7 @@ func readTxtFile(inputFilename string) []Entry {
 			float64(chapterTime.Nanosecond())/1000000000.0
 
 		// Create a new entry and append it to the slice
-		entry := Entry{StartTime: milliseconds, Title: parts[1]}
+		entry := Entry{StartTime: milliseconds, Title: chapterParts[1]}
 		entries = append(entries, entry)
 	}
 
